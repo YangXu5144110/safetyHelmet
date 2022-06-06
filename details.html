@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<title>开封市电动自行车头盔佩戴专项整治数据</title>
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<style type="text/css">
+			.box {
+				position: relative;
+				left: 0;
+				top: 260px;
+				margin: 0 15px;
+				background-color: rgba(255, 255, 255, 0.2);
+				border-radius: 4px;
+				height: 150px;
+			}
+
+			.section {
+				margin: auto 15px;
+				font-size: 16px;
+				font-weight: bold;
+				padding-top: 15px;
+				padding-bottom: 10px;
+			}
+
+			.row2 {
+				height: 40px;
+				line-height: 40px;
+				display: flex;
+				margin: 2px 15px;
+				font-size: 14px;
+				background-color: rgba(255, 255, 255, 0);
+				justify-content: space-between;
+				align-items: center;
+				color: #FFFFFF;
+				font-size: 14px;
+			}
+
+			.line {
+				background-color: rgba(255, 255, 255, 0.6);
+				height: 1px;
+				line-height: 1px;
+				margin: 0 15px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="bg2">
+			<div class="box">
+				<div id="section" class="section">第一大队</div>
+				<div class="row2">
+					<div id="title">文明劝导次数</div>
+					<div id="counts1">0次 </div>
+				</div>
+				<div class="line"></div>
+				<div class="row2">
+					<div id="title">租借头盔次数</div>
+					<div id="counts2">0次 </div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/jquery-3.5.1.min.js"></script>
+	<script>
+		// function fun() {
+		// 	this.policeMessageCount()
+		// 	this.policeHelmetCount()
+		// }
+		// //间隔1000ms周期性调用函数fun
+		// setInterval("fun()", 1000);
+
+		window.onload = function() {
+
+			var police_id = window.getQueryVariable("police_id")
+
+			if (police_id == 1) {
+				document.getElementById("section").innerText = '第一大队'
+			} else if (police_id == 2) {
+				document.getElementById("section").innerText = '第二大队'
+			} else if (police_id == 3) {
+				document.getElementById("section").innerText = '第三大队'
+			} else if (police_id == 4) {
+				document.getElementById("section").innerText = '第四大队'
+			} else if (police_id == 5) {
+				document.getElementById("section").innerText = '第五大队'
+			} else if (police_id == 6) {
+				document.getElementById("section").innerText = '祥符区大队'
+			} else if (police_id == 7) {
+				document.getElementById("section").innerText = '第七大队'
+			} else if (police_id == 8) {
+				document.getElementById("section").innerText = '杞县大队'
+			} else if (police_id == 9) {
+				document.getElementById("section").innerText = '尉氏大队'
+			} else if (police_id == 10) {
+				document.getElementById("section").innerText = '兰考大队'
+			} else if (police_id == 11) {
+				document.getElementById("section").innerText = '通许大队'
+			}
+
+			this.policeMessageCount(police_id)
+			this.policeHelmetCount(police_id)
+		}
+
+		// 获取url参数
+		function getQueryVariable(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split("=");
+				if (pair[0] == variable) {
+					return pair[1];
+				}
+			}
+			return (false);
+		}
+
+
+		function policeMessageCount(police_id) {
+			$.ajax({
+				type: 'POST',
+				url: "https://mini.tangdoush.com/api/police/policeMessageCount",
+				contentType: 'application/json',
+				async: true,
+				dataType: 'JSON',
+				contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+				data: {},
+				success: function(res) {
+					console.log(res)
+					for (var item of res.data) {
+						if (item.police_id == 1 && police_id ==1) {
+							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 2 && police_id ==2) {
+							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 3 && police_id ==3) {
+							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 4 && police_id ==4) {
+							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 5 && police_id ==5) {
+							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 6 && police_id ==6) {
+							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 7 && police_id ==7) {
+							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 8 && police_id ==8) {
+							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 9 && police_id ==9) {
+							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 10 && police_id ==10) {
+							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 11 && police_id ==11) {
+							$("#counts1").html(item.counts + '次')
+						}
+					}
+				}
+			});
+		}
+
+		function policeHelmetCount(police_id) {
+			$.ajax({
+				type: 'POST',
+				url: "https://mini.tangdoush.com/api/police/policeHelmetCount",
+				contentType: 'application/json',
+				async: true,
+				dataType: 'JSON',
+				contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+				data: {},
+				success: function(res) {
+					console.log(res)
+					for (var item of res.data) {
+						if (item.police_id == 1 && police_id ==1) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 2 && police_id ==2) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 3 && police_id ==3) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 4 && police_id ==4) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 5 && police_id ==5) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 6 && police_id ==6) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 7 && police_id ==7) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 8 && police_id ==8) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 9 && police_id ==9) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 10 && police_id ==10) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 11 && police_id ==11) {
+							$("#counts2").html(item.counts + '次')
+						}
+					}
+				}
+			});
+		}
+	</script>
+
+</html>

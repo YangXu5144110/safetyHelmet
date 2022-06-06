@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<title>查询租赁头盔</title>
+		<script src="js/angular.min.js"></script>
+		<script src="js/layer-v3.1.1/layer/mobile/layer.js"></script>
+		<script src="js/common.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<style type="text/css">
+			body {
+				background-color: #f3f7f9;
+			}
+
+			.header {
+				width: 100%;
+				height: 180px;
+
+			}
+
+			.header_img {
+				width: 100%;
+				height: 100%;
+				display: flex;
+			}
+
+			.list_box {
+				width: 92%;
+				margin: 30px auto;
+				height: 180px;
+				background: #FFFFFF;
+				border-radius: 8px;
+				position: relative;
+			}
+
+			.list_box2 {
+				width: 92%;
+				margin: 30px auto;
+				height: 240px;
+				background: #FFFFFF;
+				border-radius: 8px;
+				position: relative;
+			}
+
+			.state {
+				position: absolute;
+				top: 0;
+				right: 0;
+				width: 69px;
+				height: 62px;
+			}
+
+			.cardNo {
+				margin-left: 0.9375rem;
+				font-size: 16px;
+				color: #111111;
+				padding-top: 15px;
+
+			}
+
+			.text {
+				margin-top: 10px;
+				margin-left: 0.9375rem;
+				font-size: 14px;
+				color: #999999;
+				height: 20px;
+				line-height: 20px;
+				width: 90%;
+				text-overflow: ellipsis;
+				-webkit-box-orient: vertical;
+				-webkit-box-pack: center;
+				-webkit-box-align: center;
+				-webkit-line-clamp: 1;
+				overflow: hidden;
+			}
+
+			.btn {
+				margin: 0 auto;
+				margin-top: 20px;
+				width: 60px;
+				height: 36px;
+				line-height: 36px;
+				font-size: 16px;
+				border-radius: 4px;
+				border: 1px solid orange;
+				color: orange;
+				background: #FFFFFF;
+
+			}
+
+			.empty {
+				margin: 0 auto;
+				margin-top: 120px;
+				position: relative;
+				text-align: center;
+			}
+
+			.empty_img {
+				width: 220px;
+				height: 170px;
+			}
+
+			.empty_text {
+				color: #999999;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<img class="header_img" src="img/query.jpg" />
+		</div>
+		<div id="list">
+		<!-- 	<img class="state" src="./img/weiguihuan.png" />
+			<div class="cardNo">车牌号：111</div>
+			<div class="text">姓名：222</div>
+			<div class="text">手机号：33</div>
+			<div class="text">租借地点：44</div>
+			<div class="text">租借时间：555</div>
+			<div class="btn" onclick="onBtn">归还</div> -->
+		</div>
+		<div id="empty"></div>
+
+	</body>
+
+	<script src="js/jquery-3.5.1.min.js"></script>
+	<script>
+		window.onload = function() {
+
+			// var str = localStorage.getItem("cardList")
+			// var dataList = JSON.parse(str)
+			// console.log(dataList)
+			// var list = document.getElementById('list')
+			// var html = ''
+			// for (var i = 0; i < dataList.length; i++) {
+			// 	console.log(dataList[i])
+			// 	html += setDiv(dataList[i])
+			// }
+			// list.innerHTML = html
+
+			queryList()
+		}
+
+		// 查询
+		function queryList() {
+
+			$.ajax({
+				type: 'POST',
+				url: "https://mini.tangdoush.com/api/police/policeMessageSearch",
+				contentType: 'application/json',
+				async: true,
+				dataType: 'JSON',
+				contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+				data: {
+					user_mobile: localStorage.getItem("user_mobile"),
+				},
+				success: function(res) {
+					console.log(res)
+					if (res.code == 1) {
+						if (res.data.length > 0) {
+							var list = document.getElementById('list')
+							var html = ''
+							for (var i = 0; i < res.data.length; i++) {
+								html += setDiv(res.data[i])
+							}
+							list.innerHTML = html
+						} else {
+							var empty = document.getElementById('empty')
+							var div = '<div id="empty" class="empty"><img class="empty_img" src="img/empty.png" /><div class="empty_text">暂无数据</div></div>'
+							empty.innerHTML = div
+						}
+					}
+				}
+			});
+
+		}
+
+
+
+		function onBtn(message_id) {
+			console.log(message_id)
+			$.ajax({
+				type: 'POST',
+				url: "https://mini.tangdoush.com/api/police/policeMessageReturn",
+				contentType: 'application/json',
+				async: true,
+				dataType: 'JSON',
+				contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+				data: {
+					message_id: message_id,
+				},
+				success: function(res) {
+					console.log(res)
+					if (res.code == 1) {
+						common.toast({
+							title: res.msg
+						});
+						queryList()
+					} else {
+						common.toast({
+							title: res.msg
+						});
+					}
+
+				}
+			});
+
+		}
+
+		//绘制单个div
+		function setDiv(item) {
+
+			if (item.is_helmet == 1 && item.is_return == 2) {
+
+				if (item.ebike_number) {
+					var div =
+						'<div id="list" class="list_box" ><img class="state" src="./img/yiguihuan.png" /><div class="cardNo">车牌号：' +
+						item.ebike_number +
+						'</div><div class="text">姓名：' +
+						item.user_name +
+						'</div><div class="text">手机号：' +
+						item.user_mobile +
+						'</div><div class="text">租借地点：' +
+						item.address +
+						'</div><div class="text">租借时间：' +
+						item.create_time +
+						'</div></div>'
+					return div
+				} else {
+					var div =
+						'<div id="list" class="list_box" ><img class="state" src="./img/yiguihuan.png" /><div class="cardNo">车牌号：—— </div><div class="text">姓名：' +
+						item.user_name +
+						'</div><div class="text">手机号：' +
+						item.user_mobile +
+						'</div><div class="text">租借地点：' +
+						item.address +
+						'</div><div class="text">租借时间：' +
+						item.create_time +
+						'</div></div>'
+					return div
+				}
+
+
+			} else {
+
+				if (item.ebike_number) {
+					var div =
+						'<div id="list" class="list_box2" ><img class="state" src="./img/weiguihuan.png" /><div class="cardNo">车牌号：' +
+						item.ebike_number +
+						'</div><div class="text">姓名：' +
+						item.user_name +
+						'</div><div class="text">手机号：' +
+						item.user_mobile +
+						'</div><div class="text">租借地点：' +
+						item.address +
+						'</div><div class="text">租借时间：' +
+						item.create_time +
+						'</div><div class="btn" onclick="onBtn(' +
+						item.message_id + ')">归还</div></div>'
+					return div
+				} else {
+
+					var div =
+						'<div id="list" class="list_box2" ><img class="state" src="./img/weiguihuan.png" /><div class="cardNo">车牌号：—— </div><div class="text">姓名：' +
+						item.user_name +
+						'</div><div class="text">手机号：' +
+						item.user_mobile +
+						'</div><div class="text">租借地点：' +
+						item.address +
+						'</div><div class="text">租借时间：' +
+						item.create_time +
+						'</div><div class="btn" onclick="onBtn(' +
+						item.message_id + ')">归还</div></div>'
+					return div
+				}
+
+			}
+
+
+		}
+	</script>
+
+</html>

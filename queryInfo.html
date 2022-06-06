@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<title>查询租赁头盔</title>
+		<script src="js/angular.min.js"></script>
+		<script src="js/layer-v3.1.1/layer/mobile/layer.js"></script>
+		<script src="js/common.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		
+			body {
+				background-color: #f3f7f9;
+			}
+			.header {
+				width: 100%;
+				height: 180px;
+				display: flex;
+			}
+
+			.box_bg {
+				width: 92%;
+				height: 600px;
+				line-height: 600px;
+				background: #FFFFFF;
+				border-radius: 8px;
+				margin: 0 auto;
+				margin-top: 30px;
+			}
+
+			.search {
+				width: 86%;
+				height: 44px;
+				padding-top: 30px;
+				margin-left: 30px;
+
+			}
+			
+			.search-content{
+				display: flex;
+				margin: 0 auto;
+				margin-left: -15px;
+				font-size: 14px;
+				border-radius: 4px;
+				background-color: #f7f7f7;
+				padding-left: 15px;
+				justify-content: space-between;
+				align-items: center;
+				width: 100%;
+				height: 44px;
+			}
+
+			.search_img {
+				width: 14px;
+				height: 14px;
+			}
+		</style>
+	</head>
+	<body>
+		<img class="header" src="img/query.jpg" />
+		<div class="content">
+			<div class="box_bg">
+				<div class="search">
+					<div class="search-content">
+							<img class="search_img" src="./img/search.png" />
+							<input id="input" class="form_input" type="tel" maxlength="11" placeholder="输入手机号" value="" />
+					</div>
+				</div>
+				<div id="submit" class="btn" onclick="checkSubmit()"> 查 询 </div>
+			</div>
+		</div>
+	</body>
+
+	<script src="js/jquery-3.5.1.min.js"></script>
+	<script type="text/javascript">
+		// 查询
+		function checkSubmit() {
+
+			var user_mobile = document.getElementById("input").value;
+
+			if (!user_mobile || user_mobile == '') {
+				common.toast({
+					message: '请输入手机号'
+				})
+				return false
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: "https://mini.tangdoush.com/api/police/policeMessageSearch",
+				contentType: 'application/json',
+				async: true,
+				dataType: 'JSON',
+				contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+				data: {
+					user_mobile: user_mobile,
+				},
+				success: function(res) {
+					console.log(res)
+					if (res.code == 1) {
+						localStorage.clear();
+						// var str = JSON.stringify(res.data).toString()
+						// localStorage.setItem("cardList",str)
+						localStorage.setItem("user_mobile",user_mobile)
+						
+						window.location.href = 'queryList.html'
+
+					} else {
+						this.toast({
+							title: res.msg
+						});
+					}
+
+				}
+			});
+
+		}
+	</script>
+
+
+</html>
