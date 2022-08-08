@@ -17,8 +17,8 @@
 				<div class="title_card">车牌号：</div>
 				<div class="line">
 					<div class="city">开封·</div>
-					<input id="cardNo" class="cardNo_input" type="number" pattern="\d*" placeholder="请输入车牌号" ng-model='cardNo'
-						value="" />
+					<input id="cardNo" class="cardNo_input" type="number" pattern="\d*" placeholder="请输入车牌号"
+						ng-model='cardNo' value="" />
 				</div>
 				<div class="title">姓名：<a style="color: red;">*</a></div>
 				<div class="line">
@@ -27,27 +27,44 @@
 				</div>
 				<div class="title">手机号：<a style="color: red;">*</a></div>
 				<div class="line">
-					<input id="phone" class="form_input" type="tel" maxlength="11" placeholder="请输入手机号"
-						ng-model='phone' value="" />
+					<input id="phone" class="form_input" type="tel" maxlength="11" placeholder="请输入手机号" ng-model='phone'
+						value="" />
 				</div>
 				<div class="title">违规地点：<a style="color: red;">*</a></div>
-				<div class="row">
-					<div id="address" class="address"></div>
-					<img class="address-img" src="img/address.png" onclick="onLocation()" />
+				<div class="line">
+					<input id="address" class="form_input" type="text"  required placeholder="请输入违规地点" ng-model='address'
+						value="" />
+				</div>
+			<!-- 	<div class="title">违规地点：<a style="color: red;">*</a></div>
+				<div class="line">
+					<div class="row">
+						<div id="address" class="address"></div>
+						<img class="address-img" src="img/address.png" onclick="onLocation()" />
+					</div>
+				</div> -->
+				<div class="title">上传拍照：<a style="color: red;">*</a></div>
+				<div class="line">
+					  <img src="./img/photo.jpg" class="img_id" id="img_id" onclick="onImg()"> 
+						<input type="file" id="img_file" name="image" capture="camera" accept="image/*" style="display: none;" onchange="showImg()"/>
 				</div>
 				<div class="title">是否租借头盔：</div>
-				<select id="select" class="select"
-					onchange="gradeChange(this.options[this.options.selectedIndex].value)">
-					<option value="0">否</option>
-					<option value="1">是</option>
-				</select>
-				<div id="submit" class="btn" ng-click="checkSubmit()"> 提 交 </div>
+				<div class="line">
+					<select id="select" class="select"
+						onchange="gradeChange(this.options[this.options.selectedIndex].value)">
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+				</div>
+				<div class="submit">
+					<input type="submit" id="submit"  class="submit-btn" ng-click="checkSubmit()"></input>
+				</div>
+					
 			</div>
 		</div>
 
 
 	</body>
-	<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=C93b5178d7a8ebdb830b9b557abce78b">
+	<script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=yjFG1S1VZ1vPMAsvGzWY3SVb8TCuAGfq">
 	</script>
 	<script src="js/jquery-3.5.1.min.js"></script>
 	<script>
@@ -79,11 +96,13 @@
 
 					//将我们获取到的经纬度保存到变量中
 					var latlon = res.point.lat + ',' + res.point.lng;
-
 					// baidu接口
+					// var url =
+					// 	"https://api.map.baidu.com/geocoder/v2/?ak=c9wqDwuAOnwSC9do0HNdaPF0YTGe9OZL&location=" +
+					// 	latlon + "&output=json&pois=0"
 					var url =
-						"https://api.map.baidu.com/geocoder/v2/?ak=C93b5178d7a8ebdb830b9b557abce78b&location=" +
-						latlon + "&output=json&pois=0"
+						'https://api.map.baidu.com/reverse_geocoding/v3/?ak=yjFG1S1VZ1vPMAsvGzWY3SVb8TCuAGfq&output=json&location=' + latlon
+					
 					$.ajax({
 						type: "GET",
 						dataType: "jsonp",
@@ -136,16 +155,124 @@
 			// alert(tx);
 			console.log(tx)
 		}
+		
+		// 点击图片
+		function onImg (){
+			const input = document.querySelector('#img_file')
+			input.click()
+		}
+		
+		//回调函数返回file的值（将base64编码转成file）
+		function dataURLtoFile  (dataurl,name)  {
+		  var arr = dataurl.split(','); 
+			var mime = arr[0].match(/:(.*?);/)[1];
+		  var bstr = atob(arr[1]); 
+			let n = bstr.length;
+		  var u8arr = new Uint8Array(n);
+		  // eslint-disable-next-line no-plusplus
+		  while (n--) {
+		    u8arr[n] = bstr.charCodeAt(n);
+		  }
+		  var suffix = mime.split('/');
+		  return new File([u8arr], name, { type: mime });
+		};
+		
+		// 选择图片
+		function showImg() {
+			// var img_file =  $("#img_file").val();
+			var file = document.getElementById('img_file').files[0];
+			console.log(file)
+			if (file) {
+				let reader = new FileReader();
+				//读取file
+				reader.readAsDataURL(file);
+				reader.onloadend = function(e) {
+					let img = new Image() //新建一个img标签（还没嵌入DOM节点)
+					img.src = e.target.result //将图片的路径设成file路径
+					img.onload = function() {
+						// 缩放图片需要的canvas
+						let canvas = document.createElement('canvas'),
+							context = canvas.getContext('2d'),
+							// 图片原始尺寸
+							originWidth = this.width,
+							originHeight = this.height,
+							// 最大尺寸限制
+							maxWidth = 600,
+							maxHeight = 600,
+							// 目标尺寸
+							targetWidth = originWidth,
+							targetHeight = originHeight;
+						// 图片尺寸超过400x400的限制
+						if (originWidth > maxWidth || originHeight > maxHeight) {
+							if (originWidth / originHeight > maxWidth / maxHeight) {
+								// 更宽，按照宽度限定尺寸
+								targetWidth = maxWidth;
+								targetHeight = Math.round(maxWidth * (originHeight / originWidth));
+							} else {
+								targetHeight = maxHeight;
+								targetWidth = Math.round(maxHeight * (originWidth / originHeight));
+							}
+						}
+						// canvas对图片进行缩放
+						canvas.width = targetWidth;
+						canvas.height = targetHeight;
+						// 清除画布
+						context.clearRect(0, 0, targetWidth, targetHeight);
+						// 图片压缩
+						context.drawImage(img, 0, 0, targetWidth, targetHeight);
+						// 图片小于1M不压缩
+						console.log("压缩前：" + (file.size / 1024).toFixed(2) + 'kb');
+						// if (file.size > Math.pow(1024, 2)) {
+							//canvas转为base64 缩放比例是0-1
+							let data = canvas.toDataURL(file.type || 'image/png', 1.0);
+							//压缩完成
+							file = dataURLtoFile(data, file.name);
+						// }
+						console.log("压缩后：" + (file.size / 1024).toFixed(2) + 'kb');
+						uploadFile(file)
+					}
+				}
+			}
+			// var re = new FileReader();
+			// re.readAsDataURL(file);
+			// re.onload = function(re) {
+			// 	$('#img_id').attr("src", re.target.result);
+			// }
 
-		// 清空输入内容
-		function clearData() {
-			$(document).ready(function() {
-				$("#submit").click(function() {
-					$("#cardNo").val('');
-					$("#username").val('');
-					$("#phone").val('');
-				});
+		}
+		
+		var ebike_pic = null
+		
+		// 上传图片
+		function uploadFile(file) {
+			
+			var formData = new FormData();
+			formData.append('file', file);
+			$.ajax({
+				type: 'POST',
+				url: "https://mini.tangdoush.com/api/police/uploadFile",
+				data: formData,
+				mimeType: "multipart/form-data",
+				dataType: 'JSON',
+				cache: false,
+				processData: false,
+				contentType: false,
+				success: function(res) {
+					if (res.code == 1) {
+						common.toast({
+							title: res.msg
+						});
+						$('#img_id').attr("src", res.data.srcall);
+						ebike_pic = res.data.srcall
+					} else {
+						common.toast({
+							title: res.msg
+						});
+					}
+			
+				}
 			});
+			
 		}
 
 
@@ -188,17 +315,33 @@
 					})
 					return false
 				}
-
-				var address = document.getElementById("address").innerHTML
-
-				if (!address || address == '') {
+				
+				if (!$scope.address || $scope.address == '') {
 					common.toast({
-						message: '请选择违规地点'
+						message: '请输入违规地点'
 					})
 					return false
 				}
 				
 
+				// var address = document.getElementById("address").innerHTML
+
+				// if (!address || address == '') {
+				// 	common.toast({
+				// 		message: '请选择违规地点'
+				// 	})
+				// 	return false
+				// }
+				
+			
+				if (!ebike_pic || ebike_pic == '') {
+					common.toast({
+						message: '请上传拍照'
+					})
+					return false
+				}
+
+				
 				var police_id = 1;
 				police_id = window.getQueryVariable("police_id")
 
@@ -206,7 +349,8 @@
 				var is_helmet = 0;
 				var select = document.getElementById("select");
 				is_helmet = select.selectedIndex
-
+	
+		
 				$.ajax({
 					type: 'POST',
 					url: "https://mini.tangdoush.com/api/police/policeMessage",
@@ -219,8 +363,9 @@
 						ebike_number: $scope.cardNo,
 						user_name: $scope.username,
 						user_mobile: $scope.phone,
-						address: address,
+						address:  $scope.address,
 						is_helmet: is_helmet,
+						ebike_pic: ebike_pic
 					},
 					beforeSend: function() {
 						//3.设置提交按钮失效，以实现防止按钮重复点击
@@ -233,10 +378,17 @@
 					success: function(res) {
 						console.log(res)
 						if (res.code == 1) {
-							window.location.href = 'success.html?ebike_number='+$scope.cardNo+'&user_name='+$scope.username+'&user_mobile='+$scope.phone+'&address='+address+'' 
+							window.location.href = 'success.html?ebike_number=' + $scope.cardNo +
+								'&user_name=' + $scope.username + '&user_mobile=' + $scope.phone +
+								'&address=' + $scope.address + '&ebike_pic=' + ebike_pic +''
 							$("#cardNo").val('');
 							$("#username").val('');
 							$("#phone").val('');
+							$("#address").val('');
+							// $("#address").html('');
+							$("#img_file").val('');
+							$('#img_id').attr("src", './img/photo.jpg');
+								ebike_pic = null
 						} else {
 							common.toast({
 								title: res.msg

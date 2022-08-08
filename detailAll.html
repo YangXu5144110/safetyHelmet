@@ -56,6 +56,10 @@
 					<div id="title" class="list_title">通许大队 </div>
 					<div id="counts11" class="list_subTitle">0次 </div>
 				</div>
+				<div class="row2">
+					<div id="title" class="list_title">第六大队 </div>
+					<div id="counts66" class="list_subTitle">0次 </div>
+				</div>
 			</div>
 
 			<div class="box" style="margin-top: 20px;">
@@ -103,6 +107,10 @@
 				<div class="row2">
 					<div id="title" class="list_title">通许大队 </div>
 					<div id="count11" class="list_subTitle">0次 </div>
+				</div>
+				<div class="row2">
+					<div id="title" class="list_title">第六大队 </div>
+					<div id="count66" class="list_subTitle">0次 </div>
 				</div>
 			</div>
 
@@ -159,6 +167,8 @@
 							$("#counts10").html(item.counts + '次')
 						} else if (item.police_id == 11) {
 							$("#counts11").html(item.counts + '次')
+						} else if (item.police_id == 66) {
+							$("#counts66").html(item.counts + '次')
 						}
 					}
 				}
@@ -199,6 +209,8 @@
 							$("#count10").html(item.counts + '次')
 						} else if (item.police_id == 11) {
 							$("#count11").html(item.counts + '次')
+						} else if (item.police_id == 66) {
+							$("#count66").html(item.counts + '次')
 						}
 					}
 				}

@@ -97,6 +97,8 @@
 				document.getElementById("section").innerText = '兰考大队'
 			} else if (police_id == 11) {
 				document.getElementById("section").innerText = '通许大队'
+			} else if (police_id == 66) {
+				document.getElementById("section").innerText = '第六大队'
 			}
 
 			this.policeMessageCount(police_id)
@@ -151,6 +153,8 @@
 							$("#counts1").html(item.counts + '次')
 						} else if (item.police_id == 11 && police_id ==11) {
 							$("#counts1").html(item.counts + '次')
+						} else if (item.police_id == 66 && police_id ==66) {
+							$("#counts1").html(item.counts + '次')
 						}
 					}
 				}
@@ -190,6 +194,8 @@
 						} else if (item.police_id == 10 && police_id ==10) {
 							$("#counts2").html(item.counts + '次')
 						} else if (item.police_id == 11 && police_id ==11) {
+							$("#counts2").html(item.counts + '次')
+						} else if (item.police_id == 66 && police_id ==66) {
 							$("#counts2").html(item.counts + '次')
 						}
 					}
